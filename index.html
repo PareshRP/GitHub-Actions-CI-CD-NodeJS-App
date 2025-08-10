@@ -1,61 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        .calculator { display: inline-block; border: 1px solid #ccc; padding: 20px; border-radius: 10px; }
-        input { width: 200px; height: 40px; text-align: right; margin-bottom: 10px; font-size: 1.2em; }
-        button { width: 45px; height: 45px; font-size: 1.2em; margin: 2px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin: 0;
+      padding-top: 50px;
+    }
+    .calculator {
+      background: #fff;
+      display: inline-block;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 220px;
+      height: 50px;
+      text-align: right;
+      margin-bottom: 15px;
+      font-size: 1.4em;
+      padding: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+    }
+    button {
+      width: 50px;
+      height: 50px;
+      font-size: 1.2em;
+      margin: 3px;
+      border: none;
+      border-radius: 8px;
+      background: #e0e0e0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #d5d5d5;
+    }
+    .operator {
+      background: #f9a825;
+      color: #fff;
+    }
+    .operator:hover {
+      background: #f57f17;
+    }
+    .equal {
+      background: #43a047;
+      color: #fff;
+    }
+    .equal:hover {
+      background: #2e7d32;
+    }
+    .danger {
+      background: #e53935;
+      color: #fff;
+    }
+    .danger:hover {
+      background: #b71c1c;
+    }
+  </style>
 </head>
 <body>
-    <h1>Simple Calculator</h1>
-    <div class="calculator">
-        <input type="text" id="display" readonly>
-        <br>
-        <button onclick="clearDisplay()">C</button>
-        <button onclick="appendValue('/')">/</button>
-        <button onclick="appendValue('*')">*</button>
-        <button onclick="appendValue('-')">-</button>
-        <br>
-        <button onclick="appendValue('7')">7</button>
-        <button onclick="appendValue('8')">8</button>
-        <button onclick="appendValue('9')">9</button>
-        <button onclick="appendValue('+')">+</button>
-        <br>
-        <button onclick="appendValue('4')">4</button>
-        <button onclick="appendValue('5')">5</button>
-        <button onclick="appendValue('6')">6</button>
-        <button onclick="calculate()">=</button>
-        <br>
-        <button onclick="appendValue('1')">1</button>
-        <button onclick="appendValue('2')">2</button>
-        <button onclick="appendValue('3')">3</button>
-        <br>
-        <button onclick="appendValue('0')">0</button>
-        <button onclick="appendValue('.')">.</button>
-    </div>
 
-    <script>
-        function appendValue(value) {
-            document.getElementById("display").value += value;
-        }
+  <h1>Simple Calculator</h1>
+  <div class="calculator">
+    <input type="text" id="display" readonly>
+    <br>
+    <button class="danger" onclick="clearDisplay()">AC</button>
+    <button onclick="deleteLast()">DEL</button>
+    <button class="operator" onclick="appendValue('/')">÷</button>
+    <button class="operator" onclick="appendValue('*')">×</button>
+    <br>
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button class="operator" onclick="appendValue('-')">−</button>
+    <br>
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button class="operator" onclick="appendValue('+')">+</button>
+    <br>
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button class="equal" onclick="calculate()">=</button>
+    <br>
+    <button onclick="appendValue('0')">0</button>
+    <button onclick="appendValue('.')">.</button>
+  </div>
 
-        function clearDisplay() {
-            document.getElementById("display").value = "";
-        }
+  <script>
+    const display = document.getElementById("display");
 
-        function calculate() {
-            try {
-                document.getElementById("display").value = eval(document.getElementById("display").value);
-            } catch {
-                document.getElementById("display").value = "Error";
-            }
-        }
-    </script>
+    function appendValue(value) {
+      display.value += value;
+    }
+
+    function clearDisplay() {
+      display.value = "";
+    }
+
+    function deleteLast() {
+      display.value = display.value.slice(0, -1);
+    }
+
+    function calculate() {
+      try {
+        // safer than eval(), still keep in mind this is a demo
+        display.value = Function(`"use strict"; return (${display.value})`)();
+      } catch {
+        display.value = "Error";
+      }
+    }
+
+    // Optional: Keyboard support
+    document.addEventListener("keydown", (e) => {
+      if (!isNaN(e.key) || "+-*/.".includes(e.key)) {
+        appendValue(e.key);
+      } else if (e.key === "Enter") {
+        calculate();
+      } else if (e.key === "Backspace") {
+        deleteLast();
+      } else if (e.key === "Escape") {
+        clearDisplay();
+      }
+    });
+  </script>
 </body>
 </html>
-<!DOCTYPE html>
